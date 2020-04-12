@@ -6,8 +6,12 @@ const express = require("express");
 const app = express();
 const expressLayouts = require("express-ejs-layouts");
 
+// Import the body parser so we can get the form fields when adding a new author:
+const bodyParser = require("body-parser");
+
 // Import the index router file:
 const indexRouter = require("./routes/index");
+const authorRouter = require("./routes/authors");
 
 app.set("view engine", "ejs");
 
@@ -22,6 +26,9 @@ app.use(expressLayouts);
 // Stylesheets, JS, images...
 app.use(express.static("public"));
 
+// This limit of 10mb for the body content of the request will be useful when we start to upload files.
+app.use(bodyParser.urlencoded({ limit: "10mb", extended: false }));
+
 const mongoose = require("mongoose");
 // You may not need to pass the useNewUrlParser option since it defaults to true now.
 mongoose.connect(process.env.DATABASE_URL, { useNewUrlParser: true });
@@ -35,7 +42,10 @@ db.on("error", (error) => console.log(error));
 db.once("open", () => console.log("Connected to Mongoose"));
 
 // After we import the indexRouter file, we can tell the router to use that:
+// Note that the function is .use() and not a get request
 app.use("/", indexRouter);
+// We want to use our authorRouter but not on the root route:
+app.use("/authors", authorRouter);
 
 // When we deploy the server is going to tell us from which port we are listening to
 app.listen(process.env.PORT || 3000);

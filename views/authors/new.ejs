@@ -1,0 +1,9 @@
+<!-- let's create a form to add a new author -->
+<h2>New Author</h2>
+<form action="/authors" method="POST">
+  <!-- Instead of creating the form directly we use a form file so we can use the form both when creating and when editing authors -->
+  <%- include('_form_fields') %>
+  <!-- We use a link for the "Cancel" because links can route to other pages and buttons are meant to interact with forms -->
+  <a href="/authors">Cancel</a>
+  <button type="submit">Create</button>
+</form>
